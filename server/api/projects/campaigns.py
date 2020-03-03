@@ -3,6 +3,7 @@ from schematics.exceptions import DataError
 
 from server.models.dtos.campaign_dto import CampaignProjectDTO
 from server.services.campaign_service import CampaignService
+from server.services.project_admin_service import ProjectAdminService
 from server.models.postgis.utils import NotFound
 from server.services.users.authentication_service import token_auth, tm
 

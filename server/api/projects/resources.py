@@ -209,7 +209,6 @@ class ProjectsRestAPI(Resource):
             current_app.logger.critical(error_msg)
             return {"Error": "Unable to create project"}, 500
 
-    @tm.pm_only()
     @token_auth.login_required
     def head(self, project_id):
         """
@@ -237,11 +236,21 @@ class ProjectsRestAPI(Resource):
                 description: Project found
             401:
                 description: Unauthorized - Invalid credentials
+            403:
+                description: Unauthorized - Forbidden
             404:
                 description: Project not found
             500:
                 description: Internal Server Error
         """
+        try:
+            ProjectAdminService.is_user_action_permitted_on_project(
+                tm.authenticated_user_id, project_id
+            )
+        except ValueError as e:
+            error_msg = f"ProjectsRestAPI HEAD: {str(e)}"
+            return {"Error": error_msg}, 403
+
         try:
             project_dto = ProjectAdminService.get_project_dto_for_admin(project_id)
             return project_dto.to_primitive(), 200
@@ -371,11 +380,21 @@ class ProjectsRestAPI(Resource):
                 description: Client Error - Invalid Request
             401:
                 description: Unauthorized - Invalid credentials
+            403:
+                description: Unauthorized - Forbidden
             404:
                 description: Project not found
             500:
                 description: Internal Server Error
         """
+        try:
+            ProjectAdminService.is_user_action_permitted_on_project(
+                tm.authenticated_user_id, project_id
+            )
+        except ValueError as e:
+            error_msg = f"ProjectsRestAPI PATCH: {str(e)}"
+            return {"Error": error_msg}, 403
+
         try:
             project_dto = ProjectDTO(request.get_json())
             project_dto.project_id = project_id
@@ -391,8 +410,6 @@ class ProjectsRestAPI(Resource):
             return {"Invalid GeoJson": str(e)}, 400
         except NotFound as e:
             return {"Error": str(e) or "Project Not Found"}, 404
-        except ProjectAdminServiceError:
-            return {"Error": "Unable to update project"}, 403
         except Exception as e:
             error_msg = f"Project PATCH - unhandled error: {str(e)}"
             current_app.logger.critical(error_msg)
