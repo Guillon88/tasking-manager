@@ -127,7 +127,7 @@ class ProjectAdminService:
         if project_dto.private:
             ProjectAdminService._validate_allowed_users(project_dto)
 
-        if UserService.is_user_action_permitted_on_project(
+        if ProjectAdminService.is_user_action_permitted_on_project(
             authenticated_user_id, project_id
         ):
             project = ProjectAdminService._get_project_by_id(project_id)

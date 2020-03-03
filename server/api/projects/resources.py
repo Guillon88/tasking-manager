@@ -415,7 +415,6 @@ class ProjectsRestAPI(Resource):
             current_app.logger.critical(error_msg)
             return {"Error": "Unable to update project"}, 500
 
-    @tm.pm_only()
     @token_auth.login_required
     def delete(self, project_id):
         """
@@ -444,12 +443,20 @@ class ProjectsRestAPI(Resource):
             401:
                 description: Unauthorized - Invalid credentials
             403:
-                description: Forbidden - users have submitted mapping
+                description: Forbidden 
             404:
                 description: Project not found
             500:
                 description: Internal Server Error
         """
+        try:
+            ProjectAdminService.is_user_action_permitted_on_project(
+                tm.authenticated_user_id, project_id
+            )
+        except ValueError as e:
+            error_msg = f"ProjectsRestAPI DELETE: {str(e)}"
+            return {"Error": error_msg}, 403
+
         try:
             ProjectAdminService.delete_project(project_id, tm.authenticated_user_id)
             return {"Success": "Project deleted"}, 200
@@ -458,7 +465,7 @@ class ProjectsRestAPI(Resource):
         except NotFound:
             return {"Error": "Project Not Found"}, 404
         except Exception as e:
-            error_msg = f"Project GET - unhandled error: {str(e)}"
+            error_msg = f"ProjectsRestAPI DELETE - unhandled error: {str(e)}"
             current_app.logger.critical(error_msg)
             return {"Error": "Unable to delete project"}, 500
 
@@ -626,7 +633,6 @@ class ProjectsAllAPI(ProjectSearchBase):
 
 
 class ProjectsQueriesBboxAPI(Resource):
-    @tm.pm_only(True)
     @token_auth.login_required
     def get(self):
         """
@@ -677,6 +683,14 @@ class ProjectsQueriesBboxAPI(Resource):
                 description: Internal Server Error
         """
         try:
+            ProjectAdminService.is_user_action_permitted_on_project(
+                tm.authenticated_user_id, project_id
+            )
+        except ValueError as e:
+            error_msg = f"ProjectsQueriesBboxAPI GET: {str(e)}"
+            return {"Error": error_msg}, 403
+
+        try:
             search_dto = ProjectSearchBBoxDTO()
             search_dto.bbox = map(float, request.args.get("bbox").split(","))
             search_dto.input_srid = request.args.get("srid")
@@ -700,13 +714,12 @@ class ProjectsQueriesBboxAPI(Resource):
         except ProjectSearchServiceError:
             return {"Error": "Unable to fetch projects"}, 400
         except Exception as e:
-            error_msg = f"Project GET - unhandled error: {str(e)}"
+            error_msg = f"ProjectsQueriesBboxAPI GET - unhandled error: {str(e)}"
             current_app.logger.critical(error_msg)
             return {"Error": "Unable to fetch projects"}, 500
 
 
 class ProjectsQueriesOwnerAPI(ProjectSearchBase):
-    @tm.pm_only()
     @token_auth.login_required
     def get(self):
         """
@@ -739,6 +752,13 @@ class ProjectsQueriesOwnerAPI(ProjectSearchBase):
             500:
                 description: Internal Server Error
         """
+        try:
+            ProjectAdminService.is_user_action_permitted_on_project(
+                tm.authenticated_user_id, project_id
+            )
+        except ValueError as e:
+            error_msg = f"ProjectsQueriesOwnerAPI GET: {str(e)}"
+            return {"Error": error_msg}, 403
 
         try:
             search_dto = self.setup_search_dto()
