@@ -443,7 +443,7 @@ class ProjectsRestAPI(Resource):
             401:
                 description: Unauthorized - Invalid credentials
             403:
-                description: Forbidden 
+                description: Forbidden
             404:
                 description: Project not found
             500:
@@ -682,13 +682,13 @@ class ProjectsQueriesBboxAPI(Resource):
             500:
                 description: Internal Server Error
         """
-        try:
-            ProjectAdminService.is_user_action_permitted_on_project(
-                tm.authenticated_user_id, project_id
-            )
-        except ValueError as e:
-            error_msg = f"ProjectsQueriesBboxAPI GET: {str(e)}"
-            return {"Error": error_msg}, 403
+        # try:
+        #     ProjectAdminService.is_user_action_permitted_on_project(
+        #         tm.authenticated_user_id, project_id
+        #     )
+        # except ValueError as e:
+        #     error_msg = f"ProjectsQueriesBboxAPI GET: {str(e)}"
+        #     return {"Error": error_msg}, 403
 
         try:
             search_dto = ProjectSearchBBoxDTO()
@@ -752,13 +752,13 @@ class ProjectsQueriesOwnerAPI(ProjectSearchBase):
             500:
                 description: Internal Server Error
         """
-        try:
-            ProjectAdminService.is_user_action_permitted_on_project(
-                tm.authenticated_user_id, project_id
-            )
-        except ValueError as e:
-            error_msg = f"ProjectsQueriesOwnerAPI GET: {str(e)}"
-            return {"Error": error_msg}, 403
+        # try:
+        #     ProjectAdminService.is_user_action_permitted_on_project(
+        #         tm.authenticated_user_id, project_id
+        #     )
+        # except ValueError as e:
+        #     error_msg = f"ProjectsQueriesOwnerAPI GET: {str(e)}"
+        #     return {"Error": error_msg}, 403
 
         try:
             search_dto = self.setup_search_dto()
