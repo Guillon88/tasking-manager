@@ -1,0 +1,17 @@
+# To use this file, run `docker-compose up`.
+version: '3'
+
+services:
+
+  # Main application
+  app:
+    build: ./devops/docker/tasking-manager
+
+
+  # Migration service
+  migration:
+    build: ./devops/docker/tasking-manager
+
+
+
+
