@@ -10,7 +10,7 @@
 
     function languageService() {
 
-        var languageCode = 'en'; // default to English
+        var languageCode = 'es'; // default to English
 
         var service = {
             setLanguageCode: setLanguageCode,

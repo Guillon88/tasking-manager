@@ -42,7 +42,7 @@
                 prefix: 'locale/',
                 suffix: '.json'
             });
-            $translateProvider.preferredLanguage('en');
+            $translateProvider.preferredLanguage('es');
             // This escapes HTML in the translation - see https://angular-translate.github.io/docs/#/guide/19_security
             $translateProvider.useSanitizeValueStrategy('escape');
 
