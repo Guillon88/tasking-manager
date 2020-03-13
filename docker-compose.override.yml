@@ -16,3 +16,18 @@ services:
     build: ./devops/docker/tasking-manager
     volumes:
       - .:/usr/src/app
+
+  # postgres
+  postgresql:
+    environment: 
+      - POSTGRES_PASSWORD=tm
+    ports:
+      - 5432:5432
+
+  adminer:
+    image: adminer
+    restart: always
+    environment: 
+      - ADMINER_PLUGINS=tables-filter
+    ports:
+      - 8080:8080
