@@ -33,7 +33,7 @@
 
         var vm = this;
         vm.showDropdown = false;
-        vm.selectedLanguage = 'Español'; // defaults to English
+        vm.selectedLanguage = 'Español'; // defaults to Spanish
         vm.availableLanguages = [];
 
         activate();
