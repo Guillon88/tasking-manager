@@ -53,3 +53,13 @@ And you can check the logs with `docker-compose logs -f`
 * Setup a [live TM](./docs/setup-live.md)
 * Feel free to submit [pull requests](https://github.com/hotosm/tasking-manager/pulls)!
 * Need an upgrade? Check out the [Migration coming from TM2](./docs/migration-from-tm2.md)
+
+## Comandos utiles
+
+* docker-compose exec postgresql psql -U tm -d tasking-manager
+* update users set is_email_verified = 't', email_address='user@example.com';
+* (no anda) docker-compose exec postgresql pg_dump -Fc -U tm -d tasking-manager > /root/backup/tasking-manager.dump
+* (no anda) docker-compose exec postgresql pg_restore --clean -U tm -d tasking-manager [tasking-manager.dump]
+* pg_dump --file=tasking-manager.dump --format=c --username=tm tasking-manager
+* createdb tasking-manager
+* pg_restore --clean --dbname=tasking-manager --username=tm tasking-manager.dump
